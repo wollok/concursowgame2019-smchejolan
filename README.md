@@ -41,7 +41,7 @@ Docente/Curso/Institución:
 - Curso K2004
 - UTNFRBA
 
-Versión de wollok: 
+Versión de wollok: 1.8.5
 
 Fecha: 17/11/2019
 
