@@ -1,0 +1,79 @@
+import personajes.*
+import cosillas.*
+import items.*
+import ataquesEspeciales.*
+import niveles.*
+import wollok.game.*
+
+describe "Juego"{
+
+	var player1 = new Personaje(position = game.at(1,1), vida = 100,ataque = 10, energia = 100, item = vacio, ataqueEspecial = lanzarBolaDeFuego, orientacion = derecha,referenciaImagen="Monster")
+	var player2 = new Personaje(position = game.at(14,1),vida = 100,ataque = 10, energia = 100, item = vacio, ataqueEspecial = golpeFuerte, orientacion = izquierda,referenciaImagen="Mage")
+	
+	
+	test "caida por gravedad" {
+		nivel1.player1(player1)
+		nivel1.player2(player2)
+		nivel1.player1().position(game.at(2,5))
+		nivel1.player2().position(game.at(14,5))
+		
+		nivel1.activarGravedad()
+		assert.that(nivel1.player1().position().y() == 4)
+	}
+	
+	test "ataque normal de jugador1 a jugador2"{
+		nivel1.player1(player1)
+		nivel1.player2(player2)
+		nivel1.player1().position(game.at(0,1))
+		nivel1.player2().position(game.at(1,1))
+		
+		nivel1.player1().atacar(player2)
+		assert.equals(90, nivel1.player2().vida())
+	}
+	test "recuperar energia player1"{
+		nivel1.player1().energia(10)
+		const manzana = new HealerEnergia(position=game.at(2,1),imagen="assets/Energia.png",cant= 70)
+		game.addVisual(manzana)
+		nivel1.player1().mover(derecha,1)
+		manzana.modificarPersonaje(nivel1.player1())
+		assert.equals(80,nivel1.player1().energia())
+	}
+	test "ataque normal de jugador1 equipado con item de ataque a jugador2"{
+		nivel1.player1(player1)
+		nivel1.player2(player2)
+		nivel1.player1().position(game.at(0,1))
+		nivel1.player2().position(game.at(1,1))
+		const arma = new ItemArma(ataque = 10, cantidadDeUsos = 3, ref="Espada", position=game.at(0,1))
+		nivel1.player1().tomarItem(arma)
+		nivel1.player1().atacar(player2)
+		assert.equals(80, nivel1.player2().vida())
+	}
+		test "ataque normal de jugador1 a jugador2 equipado con item de dfensa"{
+		nivel1.player1(player1)
+		nivel1.player2(player2)
+		nivel1.player1().position(game.at(0,1))
+		nivel1.player2().position(game.at(1,1))
+		const escudo = new ItemDefensa(vidaDelEscudo = 20, ref="Escudo", position=game.at(1,1))
+		nivel1.player2().tomarItem(escudo)
+		nivel1.player1().atacar(player2)
+		assert.equals(100, nivel1.player2().vida())
+	}
+
+}
+
+describe "menu"{
+	test "seleccion de personaje y escenario"{
+
+		seleccionDeEscenario.cursor().seleccion(nivel1)
+		seleccionDeEscenario.eleccionDeEscenario()
+		seleccionDePersonaje.cursor1().seleccion(seleccionDePersonaje.mago())
+		seleccionDePersonaje.cursor2().seleccion(seleccionDePersonaje.archer())
+		seleccionDePersonaje.player1Ready(true)
+		seleccionDePersonaje.player2Ready(true)
+		seleccionDePersonaje.personajeElegido1()
+		seleccionDePersonaje.personajeElegido2()
+		assert.that(nivel1.player1()==seleccionDePersonaje.mago())	
+		assert.that(nivel1.player2()==seleccionDePersonaje.archer())
+	}
+	
+}

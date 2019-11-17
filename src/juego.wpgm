@@ -1,0 +1,17 @@
+import personajes.*
+import cosillas.*
+import niveles.*
+import wollok.game.*
+
+program nombreDeSuJuego {
+	
+	game.title("Inferious")
+	game.height(9)
+	game.width(16)
+	game.boardGround("assets/BG/parallax-space-backgound.jpg")
+
+	
+	menuInicial.iniciar()
+	
+	game.start()
+}
